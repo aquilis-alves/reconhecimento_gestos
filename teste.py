@@ -14,7 +14,7 @@ if not cap.isOpened():
 
 
 # Configura MediaPipe Hands
-with mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7) as hands:
+with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.4) as hands:
     while cap.isOpened():
         ret, frame = cap.read()
         
@@ -56,34 +56,28 @@ with mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7) as hands:
 
 
                 # Traduz para gesto
-                if finger_status == [0, 1, 0, 0, 0]:
-                    gesture = "Apontando"
-                elif finger_status == [0, 1, 1, 0, 0]:
-                    gesture = "Paz"
-                elif finger_status == [0, 0, 0, 0, 0]:
-                    gesture = "Punho fechado"
-                elif finger_status == [1, 1, 1, 1, 1]:
-                    gesture = "Mão aberta"
-                elif finger_status == [1, 0, 0, 0, 0]:
-                    gesture = "Joinha"
-                elif finger_status == [0, 0, 1, 0, 0]:
-                    gesture = "gesto feio"
-                elif finger_status == [0, 0, 0, 1, 0]:
-                    gesture = "lascado"
-                elif finger_status == [0, 0, 0, 0, 1]:
-                    gesture = "namorados"
-                elif finger_status == [0, 1, 1, 1, 0]:
-                    gesture = "numero tres"
-                elif finger_status == [0, 0, 1, 1, 1]:
-                    gesture = "numero tres"
-                elif finger_status == [0, 1, 1, 1, 1]:
-                    gesture = "numero quatro"
+                if sum(finger_status) == 1:
+                    gesture = "um"
+                elif sum(finger_status) == 2:
+                    gesture = "dois"
+                elif sum(finger_status) == 0:
+                    gesture = "zero"
+                elif sum(finger_status) == 4:
+                    gesture = "quatro"
+                elif sum(finger_status) == 5:
+                    gesture = "cinco"
+                elif sum(finger_status) == 3:
+                    gesture = "tres"
+                elif sum(finger_status) > 5:
+                    gesture = str(sum(finger_status))
                 else:
                     gesture = "Gesto desconhecido"
 
                 # Mostra o gesto na tela
                 cv2.putText(image, gesture, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,
-                            1.5, (0, 255, 0), 3)
+                            1.5, (255, 0, 0), 3)
+                
+                print(finger_status)
 
         # Exibe o vídeo
         cv2.imshow('Reconhecimento de Gestos', image)
